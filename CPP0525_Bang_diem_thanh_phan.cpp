@@ -1,42 +1,59 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct student{
-    string msv,name,grade;
-    float m1,m2,m3;
+class PhanSo
+{
+    long long tu, mau;
+public:
+    PhanSo(long long tu, long long mau);
+    friend istream& operator >> (istream&, PhanSo&);
+    friend ostream& operator << (ostream&, PhanSo);
+    friend PhanSo operator + (PhanSo, PhanSo);
 };
 
-bool cmp(student a, student b)
+PhanSo::PhanSo(long long tu, long long mau)
 {
-    return a.name < b.name;
+    this->tu = tu;
+    this->mau = mau;
+}
+istream& operator >> (istream& in, PhanSo& a)
+{
+    in >> a.tu >> a.mau;
+    return in;
 }
 
-void nhap(student &a)
+ostream& operator << (ostream& out, PhanSo a)
 {
-    cin >> a.msv;
-    cin.ignore();
-    getline(cin,a.name);
-    cin >> a.grade >> a.m1 >> a.m2 >> a.m3;
+    out << a.tu << "/" << a.mau;
+    return out;
 }
 
-void in(student ds[], int n)
+long long gcd(long long a, long long b)
 {
-    for(int i=0;i<n;i++)
-    {
-        cout << i+1 << ' ' << ds[i].msv << ' ' << ds[i].name << ' ' << ds[i].grade << ' ' << fixed << setprecision(1) << ds[i].m1 << ' ' << ds[i].m2 << ' ' << ds[i].m3 << endl;
-    }
+    if(b==0) return a;
+    return gcd(b,a%b);
 }
 
-int main()
+long long lcm(long long a, long long b)
 {
-    int t;
-    cin >> t;
-    student ds[t];
-    for(int i=0;i<t;i++)
-    {
-        nhap(ds[i]);
-    }
-    sort(ds,ds+t,cmp);
-    in(ds,t);
-    return 0;
+    return a*b/gcd(a,b);
+}
+
+PhanSo operator + (PhanSo a, PhanSo b)
+{
+    PhanSo tong(1,1);
+    long long mc = lcm(a.mau, b.mau);
+    tong.tu = mc/a.mau*a.tu + mc/b.mau*b.tu;
+    tong.mau = mc;
+    long long g = gcd(tong.tu, tong.mau);
+    tong.tu /=g;
+    tong.mau /=g;
+    return tong;
+}
+
+int main() {
+	PhanSo p(1,1), q(1,1);
+	cin >> p >> q;
+	cout << p + q;
+	return 0;
 }
